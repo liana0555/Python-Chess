@@ -1,16 +1,14 @@
-
-
 pictures_folder = "pictures"
 
 class Pawn(object):
-    def __init__(self, color):  # Инициализация нового объекта
+    def __init__(self, color):  # Preparing a new object (initialization)
         self.color = color
     
-    def __repr__(self):  # Отображение в тексте
-        return ('P', 'p')[self.color]
+    def __repr__(self):  # Display in text
+        return ('P', 'p')[self.color] # to output which color 0 or 1
 
-    def get_image_key(self):  # Ключ для изображения
-        return ('pawn_w', 'pawn_b')[self.color]
+    def get_image_key(self):  # Image key
+        return ('pawn_w', 'pawn_b')[self.color] # Selecting the correct image of the figure
 
 
 class Knight(object):

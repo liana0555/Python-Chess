@@ -53,7 +53,7 @@ class Board(object):
     def draw_board(self, screen, square_size, colors, images, width, height, border_size):
 
         # Edge color and text style
-        border_color = (122, 44, 2)  
+        border_color = (81, 93, 56)  
         font = pygame.font.SysFont('Arial', 20)
 
         # Draw the sides:
@@ -82,13 +82,13 @@ class Board(object):
         # Draw a-h horizontally
         for col in range(8):
             letter = chr(ord('a') + col)  # From "a" to "h"
-            label = font.render(letter, True, (255, 255, 255))
-            screen.blit(label, (col * square_size + border_size + square_size // 3, height - border_size + 10))
-            screen.blit(label, (col * square_size + border_size + square_size // 3, 10))  # Top edge
+            label = font.render(letter, True, (255,255,255))
+            screen.blit(label, (col * square_size + border_size + square_size // 3, height - border_size + 4))
+           # screen.blit(label, (col * square_size + border_size + square_size // 3, 4))  # Top edge
 
         # Draw the numbers (1-8) vertically
         for row in range(8):
             number = str(8 - row)  # From 1 to 8
-            label = font.render(number, True, (255, 255, 255))
-            screen.blit(label, (10, row * square_size + border_size + square_size // 3))  # Left edge 
-            screen.blit(label, (width - border_size + 10, row * square_size + border_size + square_size // 3))  # Right edge
+            label = font.render(number, True, (255,255,255))
+            screen.blit(label, (8, row * square_size + border_size + square_size // 3))  # Left edge 
+           # screen.blit(label, (width - border_size + 5, row * square_size + border_size + square_size // 3))  # Right edge

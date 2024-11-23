@@ -6,10 +6,10 @@ from Board import Board
 pygame.init()
 
 
-BORDER_SIZE = 40  # Border size
+BORDER_SIZE = 28  # Border size
 WIDTH, HEIGHT = 480 + BORDER_SIZE * 2, 480 + BORDER_SIZE * 2  
 SQUARE_SIZE = 480 // 8  # The size of the square
-COLORS = [(255, 255, 255), (217, 78, 4)]  # White and black square colors
+COLORS = [(255, 255, 255), (12, 100, 29)]  # White and black square colors
 
 # Customizing the window
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
