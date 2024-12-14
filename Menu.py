@@ -1,48 +1,72 @@
 import pygame
-import sys
-from button import ImageButton
+import sys #To use to finish the program(sys.exit)
+from button import Button
+import Comunication
+import PuzzleBoard
 
-# Инициализация pygame
+# Initializing pygame
 pygame.init()
 
-# Параметры экрана
-WIDTH, HEIGHT = 960, 600
+# Screen Options
+WIDTH, HEIGHT = 900, 900
+MAX_FPS = 60;
 
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Menu test")
-main_background = pygame. image. load("background1.jpg")
+# Screen Setup
+screen = pygame.display.set_mode((WIDTH, HEIGHT)) #Creates a window for the game
+pygame.display.set_caption("Menu")
+main_background = pygame.image.load("image.png")
+clock = pygame.time.Clock()  #Frames Per Second(game stability)
 
-def main_menu():
-    # Создание кнопок 
-    start_button = ImageButton(WIDTH/2 (252/2), 150, 252, 74, "New game", "green_button2.png", "green_button2_hover.png" )
-    settings_button = ImageButton(WIDTH/2-(252/2), 250, 252, 74, "Settings" ,"green_button2.png", "green_button2_hover.png" )
-    exit_button = ImageButton(WIDTH/2-(252/2), 250, 252, 74, "Euru", "green_button2.png", "green_button2_hover.png" )
+#Loading and setting the cursor 
+cursor = pygame.image.load("cursor.png")
+pygame.mouse.set_visible(False) #Hiding our default cursor
 
-    running = True
-    while running:
-        screen.fil1((0, 0, 0))
-        screen.blit(main_background, (0, -300))
+# Creating buttons with added sound
+start_button = Button(WIDTH/2 - (252/2), 50, 252, 74, "", "Pictures_button/play_button.png", "Pictures_button/play1_button.png" , "knopka-vyiklyuchatelya1.mp3")  
+puzzles_menu = Button(WIDTH/2 - (252/2), 150, 252, 74,"", "Pictures_button/puzzle_button.png", "Pictures_button/puzzle1_button.png" , "knopka-vyiklyuchatelya1.mp3")  
+exit_button = Button(WIDTH/2 - (252/2), 250, 250, 74,"", "Pictures_button/exit_button.png", "Pictures_button/exit1_button.png" , "knopka-vyiklyuchatelya1.mp3")  
 
-        font = pygame.font.Font (None, 72)
-        text_surface = font.render("MENU TEST", True, (255, 255, 255))
-        text_rect = text_surface.get_rect(center=(WIDTH/2, 100))
-        screen.blit(text_surface, text_rect)
+# List of levels for the puzzle
+puzzle_levels = [
+    {"level": 1},
+    {"level": 2},
+    {"level": 3},]
 
+def puzzles_menu():
+    current_level = 0
+    puzzle_board = PuzzleBoard(puzzle_levels[current_level]["level"])
+
+    while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
                 pygame.quit()
                 sys.exit()
 
-            for btn in [start_button, settings_button, exit_button]:
-                btn.handle_event(event)
-
-        for bth in [start_button,settings_button, exit_button]:
-            btn.check_hover(pygame.mouse.get_pos())
+            # Checking the solution to the puzzle
+            if puzzle_board.check_solution():
+                current_level += 1
+                if current_level < len(puzzle_levels):
+                    puzzle_board = PuzzleBoard(puzzle_levels[current_level]["level"])
+                else:
+                    print("You've passed all the levels!")
+                    return  # Return to main menu
+                
+   # Drawing the board
+        puzzle_board.draw_board(screen, PuzzleBoard.SQUARE_SIZE, PuzzleBoard.COLORS, PuzzleBoard.IMAGES, WIDTH, HEIGHT, PuzzleBoard.BORDER_SIZE)
         pygame.display.flip()
 
-def settigs_menu():
-    pass
-
 def new_game():
-    pass
+    running = True
+    while running:
+        screen.fill((0, 0, 0))
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+                #Closing the program 
+                pygame.quit()
+                sys.exit()
+
+        clock.tick(MAX_FPS)  # Limit FPS
+        pygame.display.flip()
+

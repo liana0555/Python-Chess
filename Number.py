@@ -5,7 +5,7 @@ class Pawn(object):
         self.color = color
     
     def __repr__(self):  # Display in text
-        return ('P', 'p')[self.color] # to output which color 0 or 1
+        return ('P', 'p')[self.color] # To output which color 0 or 1
 
     def get_image_key(self):  # Image key
         return ('pawn_w', 'pawn_b')[self.color] # Selecting the correct image of the figure
