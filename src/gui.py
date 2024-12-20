@@ -131,6 +131,7 @@ def main():
                         selected_piece.possibleMoves[new_y][new_x] == "1"):
                         board[selected_pos[0]][selected_pos[1]] = "_"
                         board[new_y][new_x] = selected_piece
+                        selected_piece.has_moved=1
                     selected_piece.possibleMoves = clearMap(selected_piece.possibleMoves)
                     selected_piece = None
                     selected_pos = None

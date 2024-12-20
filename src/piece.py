@@ -8,6 +8,7 @@ class Piece():
         self.name=name;
         self.color=color;
         self.possibleMoves=[['0']*8 for y in range(8)];
+        self.has_moved = False
  
 class Pawn(Piece):
         
