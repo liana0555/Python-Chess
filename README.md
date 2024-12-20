@@ -1,24 +1,29 @@
 # Python-Chess
+
 Our project for our final project on Python programming.
 
-## Team: 
+## Team:
+
 Danylo Bazalinskyi, Mikhailova Liana
 
 ## Game Objective:
+
 Checkmate is a position in which the opponent's king is under attack and cannot avoid capture. The game ends with the victory of the player who checkmated. In case of a draw there is no win.
 
-## How figures move: 
-*King: moves one square in any direction. Cannot remain under check.
+## How figures move:
 
-*Queen: moves any number of squares horizontally, vertically or diagonally. 
+\*King: moves one square in any direction. Cannot remain under check.
 
-*Rook: moves any number of squares vertically or horizontally. 
+\*Queen: moves any number of squares horizontally, vertically or diagonally.
 
-*Bishop: moves any number of squares diagonally. 
+\*Rook: moves any number of squares vertically or horizontally.
 
-*Knight: walks in the letter "G" (two squares in one direction and one perpendicular). Can jump over pieces. 
+\*Bishop: moves any number of squares diagonally.
 
-*Pawn: moves one square forward (can move two squares from the initial position). Strikes diagonally.
+\*Knight: walks in the letter "G" (two squares in one direction and one perpendicular). Can jump over pieces.
+
+\*Pawn: moves one square forward (can move two squares from the initial position). Strikes diagonally.
 
 ## Features:
+
 ## Showcase:
