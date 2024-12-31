@@ -3,7 +3,7 @@ import sys  # To use to finish the program (sys.exit)
 from button import Button
 
 class MainMenuScene:
-    def __init__(self, screen, scene_manager):
+    def __init__(self, screen, scene_manager ):
         self.screen = screen
         self.scene_manager = scene_manager
         self.font = pygame.font.Font(None, 36)
@@ -11,7 +11,7 @@ class MainMenuScene:
         # Title Text
         self.title_text = self.font.render("New Game", True, (255, 255, 255))
         self.title_rect = self.title_text.get_rect(center=(screen.get_width() // 2, 100))
-
+        self.main_background = pygame.image.load("pictures/background/main_menu.png");
         # Buttons
         self.start_button = Button(
             screen.get_width() // 2 - 126, 50, 252, 74, "", 
@@ -21,12 +21,8 @@ class MainMenuScene:
             screen.get_width() // 2 - 126, 150, 252, 74, "", 
             "pictures/Pictures_button/puzzle_button.png", "pictures/Pictures_button/puzzle1_button.png", "audio/knopka-vyiklyuchatelya1.mp3"
         )
-        self.settings_button = Button(
-            screen.get_width() // 2 - 126, 250, 252, 74, "", 
-            "pictures/Pictures_button/exit_button.png", "pictures/Pictures_button/exit1_button.png", "audio/knopka-vyiklyuchatelya1.mp3"
-        )
         self.exit_button = Button(
-            screen.get_width() // 2 - 126, 350, 252, 74, "", 
+            screen.get_width() // 2 - 126, 250, 252, 74, "", 
             "pictures/Pictures_button/exit_button.png", "pictures/Pictures_button/exit1_button.png", "audio/knopka-vyiklyuchatelya1.mp3"
         )
 
@@ -40,7 +36,7 @@ class MainMenuScene:
         pass
 
     def render(self):
-        self.screen.fill((0, 0, 0))
+        self.screen.blit(self.main_background, (0, -30))
 
         # Draw Title
         self.screen.blit(self.title_text, self.title_rect)
@@ -65,7 +61,7 @@ class MainMenuScene:
             if self.start_button.is_clicked(event.pos):
                 self.scene_manager.switch_scene("NewGameScene")
             elif self.puzzles_button.is_clicked(event.pos):
-                print("Puzzles menu selected")
+                self.scene_manager.switch_scene("PuzzleSelectorScene")
             elif self.exit_button.is_clicked(event.pos):
                 pygame.quit()
                 sys.exit()

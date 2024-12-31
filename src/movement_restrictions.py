@@ -97,9 +97,8 @@ def restrictImpossibleMoves(board: list, piece: Piece, startY: int, startX: int,
                     if not validatePawnMove(board, piece, startY, startX, y, x):
                         possibleMoves[y][x] = '0'
                         continue
-
-                    if canEnPassant(board, piece, startY, startX, y, x):
-                        possibleMoves[y][x] = '1'
+                    if checkEnPassant(board, piece, startY, startX, y, x):
+                        possibleMoves[y][x] = '2'  # Mark en passant square as "2"
 
                 if piece.name.lower() == 'k':
                     simulatedBoard = simulateMove(board, startY, startX, y, x)
@@ -114,11 +113,12 @@ def restrictImpossibleMoves(board: list, piece: Piece, startY: int, startX: int,
 
     if piece.name.lower() == 'k':
         if canCastle(board, piece, startY, startX, 'left'):
-            possibleMoves[startY][startX - 2] = '1'
+            possibleMoves[startY][startX - 2] = '2'  # Mark left castle square as "2"
         if canCastle(board, piece, startY, startX, 'right'):
-            possibleMoves[startY][startX + 2] = '1'
+            possibleMoves[startY][startX + 2] = '2'  # Mark right castle square as "2"
 
     return possibleMoves
+
 
 def isPathClear(board: list, startY: int, startX: int, endY: int, endX: int) -> bool:
     dy = endY - startY
@@ -137,18 +137,21 @@ def isPathClear(board: list, startY: int, startX: int, endY: int, endX: int) -> 
     return True
 
 def validatePawnMove(board: list, piece: Piece, startY: int, startX: int, endY: int, endX: int) -> bool:
-    if abs(endX - startX) == 1 and abs(endY - startY) == 1:
-        return isOpponent(board, startY, startX, endY, endX)
+
+    if abs(endX - startX) == 1 and endY - startY == piece.direction:
+        return isOpponent(board, startY, startX, endY, endX) or checkEnPassant(board,   piece, startY, startX, endY, endX)
+
 
     if endX == startX:
-        if abs(endY - startY) == 1 and not isPiece(board, endY, endX):
+        if endY - startY == piece.direction and not isPiece(board, endY, endX):
             return True
         if abs(endY - startY) == 2 and startY in (1, 6) and not isPiece(board, endY, endX):
-            intermediateY = startY + (1 if piece.direction == 1 else -1)
+            intermediateY = startY + piece.direction
             if not isPiece(board, intermediateY, startX):
                 return True
 
     return False
+
 
 
 def canCastle(board: list, king: Piece, kingY: int, kingX: int, direction: str) -> bool:
@@ -184,16 +187,13 @@ def executeCastle(board: list, kingY: int, kingX: int, direction: str) -> list:
 
     return board
 
-def canEnPassant(board: list, pawn: Piece, startY: int, startX: int, endY: int, endX: int) -> bool:
-    if pawn.name.lower() != 'p':
-        return False
-
-    opponentPawn = board[startY][endX]
-
-    if not isinstance(opponentPawn, Piece) or opponentPawn.name.lower() != 'p' or opponentPawn.color == pawn.color:
-        return False
-
-    return abs(startY - endY) == 1 and abs(startX - endX) == 1 and opponentPawn.justMovedTwo
+def checkEnPassant(board: list, piece: Piece, startY: int, startX: int, endY: int, endX: int):
+    if abs(endX - startX) == 1 and endY - startY == piece.direction:
+        opponentPawn = board[startY][endX]
+        if isinstance(opponentPawn, Piece) and opponentPawn.name.lower() == 'p' and \
+            opponentPawn.color != piece.color and opponentPawn.justMovedTwo:
+            return True
+    return False
 
 def executeEnPassant(board: list, pawnY: int, pawnX: int, targetY: int, targetX: int) -> list:
     board[targetY][targetX] = board[pawnY][pawnX]

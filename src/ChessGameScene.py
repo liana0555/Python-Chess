@@ -4,14 +4,12 @@ from piece import *
 from vboard import *
 from movement_matrix import *
 from movement_restrictions import *
-
+import copy
 class ChessGameScene:
-    def __init__(self, screen, scene_manager):
+    def __init__(self, screen, scene_manager , custom_board=None):
         self.screen = screen
         self.scene_manager = scene_manager
         self.font = pygame.font.SysFont("Arial", 20)
-
-        # Constants
         self.HISTORY_SCROLL_STEP = 20
         self.HISTORY_WIDTH = 200
         self.BORDER_SIZE = 28
@@ -19,30 +17,15 @@ class ChessGameScene:
         self.SQUARE_SIZE = 480 // self.BOARD_SIZE
         self.SCREEN_WIDTH = 480 + self.BORDER_SIZE * 2 + self.HISTORY_WIDTH
         self.SCREEN_HEIGHT = 480 + self.BORDER_SIZE * 2
-
         self.COLORS = [(255, 255, 255), (12, 100, 29)]
         self.BORDER_COLOR = (81, 93, 56)
         self.HIGHLIGHT_COLOR_LIGHT = (220, 220, 80)
         self.HIGHLIGHT_COLOR_DARK = (200, 200, 0)
         self.HIGHLIGHT_CURSOUR_COLOR_LIGHT = (180, 180, 60)
         self.HIGHLIGHT_CURSOUR_COLOR_DARK = (120, 120, 0)
-
         self.PICTURES_FOLDER = "pictures"
         self.IMAGES = self.load_images()
-
-        # Initialize the board
-        self.board = None
-
-        # Game state
-        self.selected_piece = None
-        self.selected_pos = None
-        self.current_turn = Color.white
-        self.move_history = []
-        self.previous_states = []  # Stack for undo functionality
-        self.history_scroll_offset = 0
-
-        # Clock for frame rate
-        self.clock = pygame.time.Clock()
+        self.custom_board=custom_board;
 
     def load_images(self):
         images = {
@@ -65,7 +48,18 @@ class ChessGameScene:
         return images
 
     def setup(self):
-        self.board = initBoardR()
+        self.board = None
+        self.selected_piece = None
+        self.selected_pos = None
+        self.current_turn = Color.white
+        self.move_history = []
+        self.previous_states = []
+        self.history_scroll_offset = 0
+        self.clock = pygame.time.Clock()
+        if self.custom_board==None:
+            self.board = initBoardR()
+        else:
+            self.board = copy.deepcopy(self.custom_board)
         self.selected_piece = None
         self.selected_pos = None
 
@@ -116,7 +110,7 @@ class ChessGameScene:
     def draw_moves(self, piece):
         for row in range(self.BOARD_SIZE):
             for col in range(self.BOARD_SIZE):
-                if piece.possibleMoves[row][col] == "1":
+                if piece.possibleMoves[row][col] != "0":
                     square_color = self.COLORS[(row + col) % 2]
                     highlight_color = self.HIGHLIGHT_COLOR_LIGHT if square_color == self.COLORS[0] else self.HIGHLIGHT_COLOR_DARK
                     self.highlight_square(col, row, highlight_color)
@@ -140,7 +134,7 @@ class ChessGameScene:
     def draw_move_history_entries(self):
         for i, move in enumerate(self.move_history):
             y_position = 40 + i * 20 - self.history_scroll_offset
-            if 25 <= y_position < self.SCREEN_HEIGHT:  # Draw only visible moves
+            if 25 <= y_position < self.SCREEN_HEIGHT:
                 move_text = self.font.render(move, True, (255, 255, 255))
                 self.screen.blit(move_text, (self.SCREEN_WIDTH - (self.HISTORY_WIDTH + self.BORDER_SIZE) + 10, y_position))
 
@@ -168,26 +162,54 @@ class ChessGameScene:
     def handle_mouse_button_up(self):
         if self.selected_piece:
             new_x, new_y = self.get_square_under_mouse()
-            if new_x is not None and new_y is not None and self.selected_piece.possibleMoves[new_y][new_x] == "1":
-                self.previous_states.append([row[:] for row in self.board])
-                self.write_in_history(new_x,new_y)
-                self.board[self.selected_pos[0]][self.selected_pos[1]] = "_"
-                self.board[new_y][new_x] = self.selected_piece
-                self.selected_piece.has_moved = 1
+            if new_x is not None and new_y is not None:
+                move_type = self.selected_piece.possibleMoves[new_y][new_x]
 
-                self.current_turn = Color.black if self.current_turn == Color.white else Color.white
+                if move_type in {"1", "2"}:
+                    self.previous_states.append([row[:] for row in self.board])
 
-            self.selected_piece.possibleMoves = clearMap(self.selected_piece.possibleMoves)
-            self.selected_piece = None
-            self.selected_pos = None
-    
-    def write_in_history(self,new_x,new_y):
+                    if move_type == "2":
+                        if isinstance(self.selected_piece, Pawn) and abs(new_x - self.selected_pos[1]) == 1:
+                            self.board = executeEnPassant(self.board, self.selected_pos[0], self.selected_pos[1], new_y, new_x)
+                            self.write_in_history(new_x, new_y, special="e.p.")
+                        elif isinstance(self.selected_piece, King) and abs(new_x - self.selected_pos[1]) == 2:
+                            direction = "left" if new_x < self.selected_pos[1] else "right"
+                            self.board = executeCastle(self.board, self.selected_pos[0], self.selected_pos[1], direction)
+                            self.write_in_history(new_x, new_y, special="O-O" if direction == "right" else "O-O-O")
+                    else:
+                        self.write_in_history(new_x, new_y)
+
+                        self.board[self.selected_pos[0]][self.selected_pos[1]] = "_"
+
+                        self.board[new_y][new_x] = self.selected_piece
+
+                    if isinstance(self.selected_piece, Pawn):
+                        for row in self.board:
+                            for cell in row:
+                                if isinstance(cell, Pawn):
+                                    cell.justMovedTwo = False
+
+                        if abs(new_y - self.selected_pos[0]) == 2:
+                            self.selected_piece.justMovedTwo = True
+
+                    self.selected_piece.has_moved = True
+
+                    self.current_turn = Color.black if self.current_turn == Color.white else Color.white
+
+                self.selected_piece.possibleMoves = clearMap(self.selected_piece.possibleMoves)
+                self.selected_piece = None
+                self.selected_pos = None
+
+    def write_in_history(self, new_x, new_y, special=None):
         piece_symbol = self.selected_piece.name.upper() if self.selected_piece.name != "p" else ""
         move_notation = f"{piece_symbol}{chr(ord('a') + new_x)}{8 - new_y}"
         if self.board[new_y][new_x] != "_":
-                move_notation = f"{piece_symbol}x{chr(ord('a') + new_x)}{8 - new_y}"
-        self.move_history.append(move_notation)     
-        
+            move_notation = f"{piece_symbol}x{chr(ord('a') + new_x)}{8 - new_y}"
+        if special:
+            move_notation = special
+        self.move_history.append(move_notation)
+
+    
     def handle_event(self, event):
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -211,6 +233,17 @@ class ChessGameScene:
         elif event.key == pygame.K_DOWN:
             self.history_scroll_offset += self.HISTORY_SCROLL_STEP
 
+    def display_winner_popup(self, winner):
+        overlay = pygame.Surface((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
+        overlay.set_alpha(200)
+        overlay.fill((0, 0, 0))
+        self.screen.blit(overlay, (0, 0))
+        popup_font = pygame.font.SysFont("Arial", 50)
+        text = f"{winner} Wins!"
+        text_surface = popup_font.render(text, True, (255, 255, 255))
+        text_rect = text_surface.get_rect(center=(self.SCREEN_WIDTH // 2, self.SCREEN_HEIGHT // 2))
+        self.screen.blit(text_surface, text_rect)
+
     def cleanup(self):
         pass
 
@@ -224,5 +257,8 @@ class ChessGameScene:
         self.draw_cursor_highlight()
         self.draw_pieces()
         self.draw_move_history()
+        if isMate(self.board, self.current_turn):
+            winner = "White" if self.current_turn == Color.black else "Black"
+            self.display_winner_popup(winner)
         pygame.display.flip()
         self.clock.tick(60)
