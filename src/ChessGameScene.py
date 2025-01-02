@@ -229,7 +229,7 @@ class ChessGameScene:
                     if isinstance(piece, Piece):
                         piece.has_moved = last_state["has_moved"][row_idx][col_idx]
             self.move_history.pop()
-            self.current_turn = Color.black if self.current_turn == Colgor.white else Color.white
+            self.current_turn = Color.black if self.current_turn == Color.white else Color.white
         elif event.key == pygame.K_UP:
             self.history_scroll_offset = max(0, self.history_scroll_offset - self.HISTORY_SCROLL_STEP)
         elif event.key == pygame.K_DOWN:
