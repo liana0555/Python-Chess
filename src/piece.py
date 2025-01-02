@@ -1,28 +1,28 @@
 class Color(enumerate):
-    white="1";
-    black="0"; 
+    white="1"
+    black="0" 
 
 class Piece():
     
     def __init__(self,name:str,color:Color)->None:
-        self.name=name;
-        self.color=color;
-        self.possibleMoves=[['0']*8 for y in range(8)];
+        self.name=name
+        self.color=color
+        self.possibleMoves=[['0']*8 for y in range(8)]
         self.has_moved = False
  
 class Pawn(Piece):
         
     def __init__(self,name:str,color:Color,direction:int)->None:
-        super().__init__(name,color);
-        self.direction= direction; 
-        self.possibleMoves=[['0']*8 for y in range(8)];  
-
+        super().__init__(name,color)
+        self.direction= direction 
+        self.possibleMoves=[['0']*8 for y in range(8)]  
+        self.justMovedTwo=False
 
 def isPiece(bitmap:list,posY:int,posX:int)->bool:
-    return  isinstance(bitmap[posY][posX], Piece) ;
+    return  isinstance(bitmap[posY][posX], Piece) 
 
 def inBoard(posY:int,posX:int)->bool:
-    return 0 <= posX < 8 and 0 <= posY < 8;
+    return 0 <= posX < 8 and 0 <= posY < 8
 
 def isAlly(bitmap: list, startPosY: int, startPosX: int, targetPosY: int, targetPosX: int) -> bool:
  
