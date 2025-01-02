@@ -1,31 +1,45 @@
 import pygame
-import sys  # To use to finish the program (sys.exit)
+import sys 
 from button import Button
 
 class MainMenuScene:
-    def __init__(self, screen, scene_manager ):
+    def __init__(self, screen, scene_manager):
         self.screen = screen
         self.scene_manager = scene_manager
-        self.font = pygame.font.Font(None, 36)
+        self.font = pygame.font.Font(None, 66)
 
         # Title Text
         self.title_text = self.font.render("New Game", True, (255, 255, 255))
-        self.title_rect = self.title_text.get_rect(center=(screen.get_width() // 2, 100))
-        self.main_background = pygame.image.load("pictures/background/main_menu.png");
-        # Buttons
+        self.title_rect = self.title_text.get_rect(center=(screen.get_width() // 2, screen.get_height()-40))
+
+        self.main_background = pygame.image.load("pictures/background/main_menu.png")
+        self.cursor = pygame.image.load("pictures/cursor.png")
+        
+        # Buttons positioned horizontally
+        button_width = 232
+        button_height = 74
+        button_spacing = 10
+
+        total_width = 3 * button_width + 2 * button_spacing
+        start_x = (screen.get_width() - total_width) // 2
+
         self.start_button = Button(
-            screen.get_width() // 2 - 126, 50, 252, 74, "", 
+            start_x, 25, button_width, button_height, "",
             "pictures/Pictures_button/play_button.png", "pictures/Pictures_button/play1_button.png", "audio/knopka-vyiklyuchatelya1.mp3"
         )
         self.puzzles_button = Button(
-            screen.get_width() // 2 - 126, 150, 252, 74, "", 
+            start_x + button_width + button_spacing, 25, button_width, button_height, "",
             "pictures/Pictures_button/puzzle_button.png", "pictures/Pictures_button/puzzle1_button.png", "audio/knopka-vyiklyuchatelya1.mp3"
         )
         self.exit_button = Button(
-            screen.get_width() // 2 - 126, 250, 252, 74, "", 
+            start_x + 2 * (button_width + button_spacing), 25, button_width, button_height, "",
             "pictures/Pictures_button/exit_button.png", "pictures/Pictures_button/exit1_button.png", "audio/knopka-vyiklyuchatelya1.mp3"
         )
 
+    def draw_custom_cursor(self):
+        mouse_pos = pygame.mouse.get_pos()
+        self.screen.blit(self.cursor, (mouse_pos[0] - self.cursor.get_width() // 2, mouse_pos[1] - self.cursor.get_height() // 2))
+        
     def setup(self):
         pass
 
@@ -45,18 +59,18 @@ class MainMenuScene:
         self.start_button.draw(self.screen)
         self.puzzles_button.draw(self.screen)
         self.exit_button.draw(self.screen)
-
+        self.draw_custom_cursor()
         pygame.display.flip()
 
     def handle_event(self, event):
         mouse_pos = pygame.mouse.get_pos()
-    
-    # Update hover states
+
+        # Update hover states
         self.start_button.check_hover(mouse_pos)
         self.puzzles_button.check_hover(mouse_pos)
         self.exit_button.check_hover(mouse_pos)
 
-    # Pass events to buttons
+        # Pass events to buttons
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.start_button.is_clicked(event.pos):
                 self.scene_manager.switch_scene("NewGameScene")

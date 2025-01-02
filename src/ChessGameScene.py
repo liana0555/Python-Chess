@@ -4,9 +4,11 @@ from piece import *
 from vboard import *
 from movement_matrix import *
 from movement_restrictions import *
+from button import Button
 import copy
+
 class ChessGameScene:
-    def __init__(self, screen, scene_manager , custom_board=None):
+    def __init__(self, screen, scene_manager, custom_board=None):
         self.screen = screen
         self.scene_manager = scene_manager
         self.font = pygame.font.SysFont("Arial", 20)
@@ -23,9 +25,16 @@ class ChessGameScene:
         self.HIGHLIGHT_COLOR_DARK = (200, 200, 0)
         self.HIGHLIGHT_CURSOUR_COLOR_LIGHT = (180, 180, 60)
         self.HIGHLIGHT_CURSOUR_COLOR_DARK = (120, 120, 0)
-        self.PICTURES_FOLDER = "pictures"
+        self.PICTURES_FOLDER = "pictures/pieces"
         self.IMAGES = self.load_images()
-        self.custom_board=custom_board;
+        self.custom_board = custom_board
+        self.cursor = pygame.image.load("pictures/cursor.png")
+        self.exit_button = Button(
+            (self.screen.get_width() - 200), self.screen.get_height() - 80, 200, 80, "",
+            "pictures/Pictures_button/exit_button.png", "pictures/Pictures_button/exit1_button.png", "audio/knopka-vyiklyuchatelya1.mp3"
+        )
+        self.dragging_piece = None  # Currently dragged piece
+        self.dragging_piece_pos = (0, 0)  # Position of the dragged piece
 
     def load_images(self):
         images = {
@@ -56,12 +65,10 @@ class ChessGameScene:
         self.previous_states = []
         self.history_scroll_offset = 0
         self.clock = pygame.time.Clock()
-        if self.custom_board==None:
+        if self.custom_board is None:
             self.board = initBoardR()
         else:
             self.board = copy.deepcopy(self.custom_board)
-        self.selected_piece = None
-        self.selected_pos = None
 
     def draw_borders(self):
         pygame.draw.rect(self.screen, self.BORDER_COLOR, (0, 0, self.SCREEN_WIDTH, self.BORDER_SIZE))
@@ -99,7 +106,7 @@ class ChessGameScene:
         for row in range(self.BOARD_SIZE):
             for col in range(self.BOARD_SIZE):
                 piece = self.board[row][col]
-                if isinstance(piece, Piece):
+                if isinstance(piece, Piece) and piece != self.dragging_piece:
                     self.draw_piece(piece, col * self.SQUARE_SIZE + self.BORDER_SIZE, row * self.SQUARE_SIZE + self.BORDER_SIZE)
 
     def highlight_square(self, x, y, highlight_color):
@@ -134,7 +141,7 @@ class ChessGameScene:
     def draw_move_history_entries(self):
         for i, move in enumerate(self.move_history):
             y_position = 40 + i * 20 - self.history_scroll_offset
-            if 25 <= y_position < self.SCREEN_HEIGHT:
+            if 25 <= y_position < self.SCREEN_HEIGHT - 80:
                 move_text = self.font.render(move, True, (255, 255, 255))
                 self.screen.blit(move_text, (self.SCREEN_WIDTH - (self.HISTORY_WIDTH + self.BORDER_SIZE) + 10, y_position))
 
@@ -158,6 +165,8 @@ class ChessGameScene:
                 self.selected_piece = selected_piece
                 self.selected_pos = (y, x)
                 self.selected_piece.possibleMoves = restrictImpossibleMoves(self.board, self.selected_piece, y, x)
+                self.dragging_piece = selected_piece  # Start dragging
+                self.dragging_piece_pos = pygame.mouse.get_pos()
 
     def handle_mouse_button_up(self):
         if self.selected_piece:
@@ -166,21 +175,22 @@ class ChessGameScene:
                 move_type = self.selected_piece.possibleMoves[new_y][new_x]
 
                 if move_type in {"1", "2"}:
-                    self.previous_states.append([row[:] for row in self.board])
+                    self.previous_states.append({
+                        "board": [row[:] for row in self.board],
+                        "has_moved": [[piece.has_moved if isinstance(piece, Piece) else None for piece in row] for row in self.board]
+                    })
 
                     if move_type == "2":
                         if isinstance(self.selected_piece, Pawn) and abs(new_x - self.selected_pos[1]) == 1:
                             self.board = executeEnPassant(self.board, self.selected_pos[0], self.selected_pos[1], new_y, new_x)
                             self.write_in_history(new_x, new_y, special="e.p.")
-                        elif isinstance(self.selected_piece, King) and abs(new_x - self.selected_pos[1]) == 2:
+                        elif isinstance(self.selected_piece, Piece) and abs(new_x - self.selected_pos[1]) == 2:
                             direction = "left" if new_x < self.selected_pos[1] else "right"
                             self.board = executeCastle(self.board, self.selected_pos[0], self.selected_pos[1], direction)
                             self.write_in_history(new_x, new_y, special="O-O" if direction == "right" else "O-O-O")
                     else:
                         self.write_in_history(new_x, new_y)
-
                         self.board[self.selected_pos[0]][self.selected_pos[1]] = "_"
-
                         self.board[new_y][new_x] = self.selected_piece
 
                     if isinstance(self.selected_piece, Pawn):
@@ -188,17 +198,16 @@ class ChessGameScene:
                             for cell in row:
                                 if isinstance(cell, Pawn):
                                     cell.justMovedTwo = False
-
                         if abs(new_y - self.selected_pos[0]) == 2:
                             self.selected_piece.justMovedTwo = True
 
                     self.selected_piece.has_moved = True
-
                     self.current_turn = Color.black if self.current_turn == Color.white else Color.white
 
                 self.selected_piece.possibleMoves = clearMap(self.selected_piece.possibleMoves)
-                self.selected_piece = None
-                self.selected_pos = None
+
+            self.selected_piece = None
+            self.dragging_piece = None  # Stop dragging
 
     def write_in_history(self, new_x, new_y, special=None):
         piece_symbol = self.selected_piece.name.upper() if self.selected_piece.name != "p" else ""
@@ -209,25 +218,18 @@ class ChessGameScene:
             move_notation = special
         self.move_history.append(move_notation)
 
-    
-    def handle_event(self, event):
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            self.handle_mouse_button_down()
-        elif event.type == pygame.MOUSEBUTTONUP:
-            self.handle_mouse_button_up()
-        elif event.type == pygame.KEYDOWN:
-            self.handle_key_down(event)
-
     def handle_key_down(self, event):
         if event.key == pygame.K_ESCAPE:
             self.scene_manager.switch_scene("MainMenuScene")
         elif event.key == pygame.K_u and self.previous_states:
-            self.board = self.previous_states.pop()
+            last_state = self.previous_states.pop()
+            self.board = last_state["board"]
+            for row_idx, row in enumerate(self.board):
+                for col_idx, piece in enumerate(row):
+                    if isinstance(piece, Piece):
+                        piece.has_moved = last_state["has_moved"][row_idx][col_idx]
             self.move_history.pop()
-            self.current_turn = Color.black if self.current_turn == Color.white else Color.white
+            self.current_turn = Color.black if self.current_turn == Colgor.white else Color.white
         elif event.key == pygame.K_UP:
             self.history_scroll_offset = max(0, self.history_scroll_offset - self.HISTORY_SCROLL_STEP)
         elif event.key == pygame.K_DOWN:
@@ -244,21 +246,48 @@ class ChessGameScene:
         text_rect = text_surface.get_rect(center=(self.SCREEN_WIDTH // 2, self.SCREEN_HEIGHT // 2))
         self.screen.blit(text_surface, text_rect)
 
+    def draw_custom_cursor(self):
+        mouse_pos = pygame.mouse.get_pos()
+        self.screen.blit(self.cursor, (mouse_pos[0] - self.cursor.get_width() // 2, mouse_pos[1] - self.cursor.get_height() // 2))
+
+    def handle_event(self, event):
+        mouse_pos = pygame.mouse.get_pos()
+        self.exit_button.check_hover(mouse_pos)
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            self.handle_mouse_button_down()
+            if self.exit_button.is_clicked(event.pos):
+                self.scene_manager.switch_scene("MainMenuScene")
+        elif event.type == pygame.MOUSEBUTTONUP:
+            self.handle_mouse_button_up()
+        elif event.type == pygame.KEYDOWN:
+            self.handle_key_down(event)
+
     def cleanup(self):
         pass
 
     def update(self):
         for event in pygame.event.get():
             self.handle_event(event)
+        if self.dragging_piece:
+            self.dragging_piece_pos = pygame.mouse.get_pos()
 
     def render(self):
         self.screen.fill((0, 0, 0))
         self.draw_board()
         self.draw_cursor_highlight()
         self.draw_pieces()
+        if self.dragging_piece:
+            mouse_x, mouse_y = self.dragging_piece_pos
+            img_key = f"{self.dragging_piece.name.lower()}_{'w' if self.dragging_piece.color == Color.white else 'b'}"
+            self.screen.blit(self.IMAGES[img_key], (mouse_x - self.SQUARE_SIZE // 2, mouse_y - self.SQUARE_SIZE // 2))
         self.draw_move_history()
+        self.exit_button.draw(self.screen)
         if isMate(self.board, self.current_turn):
             winner = "White" if self.current_turn == Color.black else "Black"
             self.display_winner_popup(winner)
+        self.draw_custom_cursor()
         pygame.display.flip()
         self.clock.tick(60)

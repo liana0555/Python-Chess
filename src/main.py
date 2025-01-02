@@ -5,7 +5,7 @@ from PuzzleSelectorScene import PuzzleSelectorScene
 from ChessGameScene import ChessGameScene
 import puzzle_boards
 pygame.init()
-
+pygame.mouse.set_visible(False)
 screen = pygame.display.set_mode((708, 536))
 
 
