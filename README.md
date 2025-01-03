@@ -29,8 +29,8 @@ You have already placed pieces and you have to checkmate your opponent as quickl
 With each level / with each subsequent puzzle, it will be more and more difficult to checkmate. So you need to be patient and knowledgeable. 
 
 ## Features:
-U - undo past move 
-Up and down arrow - flip through the history of moves 
-ESC - return to the main menu / quit the game (if in the main menu).
+\*U - undo past move
+\*Up and down arrow - flip through the history of moves 
+\*ESC - return to the main menu / quit the game (if in the main menu).
 
 ## Showcase:
