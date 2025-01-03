@@ -194,6 +194,8 @@ class ChessGameScene:
                         self.board[new_y][new_x] = self.selected_piece
 
                     if isinstance(self.selected_piece, Pawn):
+                        if (self.selected_piece.color == Color.white and new_y == 0) or (self.selected_piece.color == Color.black and new_y == 7):
+                            self.board[new_y][new_x] = Piece("Q",self.selected_piece.color)  # Promote to a queen
                         for row in self.board:
                             for cell in row:
                                 if isinstance(cell, Pawn):
