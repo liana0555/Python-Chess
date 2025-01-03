@@ -69,6 +69,13 @@ class ChessGameScene:
             self.board = initBoardR()
         else:
             self.board = copy.deepcopy(self.custom_board)
+    
+        if not pygame.mixer.music.get_busy():  
+            pygame.mixer.music.load("audio/fairy-tale-fantasy-123608.mp3")  
+            pygame.mixer.music.set_volume(0.5)
+            pygame.mixer.music.play(-1)
+            
+ 
 
     def draw_borders(self):
         pygame.draw.rect(self.screen, self.BORDER_COLOR, (0, 0, self.SCREEN_WIDTH, self.BORDER_SIZE))
@@ -87,7 +94,7 @@ class ChessGameScene:
     def draw_coordinates(self):
         for col in range(self.BOARD_SIZE):
             label = self.font.render(chr(ord("a") + col), True, (255, 255, 255))
-            self.screen.blit(label, (col * self.SQUARE_SIZE + self.BORDER_SIZE + self.SQUARE_SIZE // 3, self.SCREEN_HEIGHT - self.BORDER_SIZE - 2 ))
+            self.screen.blit(label, (col * self.SQUARE_SIZE + self.BORDER_SIZE + self.SQUARE_SIZE // 3, self.SCREEN_HEIGHT - self.BORDER_SIZE + 4))
 
         for row in range(self.BOARD_SIZE):
             label = self.font.render(str(8 - row), True, (255, 255, 255))
@@ -172,6 +179,7 @@ class ChessGameScene:
         if self.selected_piece:
             new_x, new_y = self.get_square_under_mouse()
             if new_x is not None and new_y is not None:
+                pygame.mixer.Sound("audio/knopka-vyiklyuchatelya1.mp3").play()
                 move_type = self.selected_piece.possibleMoves[new_y][new_x]
 
                 if move_type in {"1", "2"}:
@@ -192,6 +200,7 @@ class ChessGameScene:
                         self.write_in_history(new_x, new_y)
                         self.board[self.selected_pos[0]][self.selected_pos[1]] = "_"
                         self.board[new_y][new_x] = self.selected_piece
+
 
                     if isinstance(self.selected_piece, Pawn):
                         if (self.selected_piece.color == Color.white and new_y == 0) or (self.selected_piece.color == Color.black and new_y == 7):
@@ -261,6 +270,7 @@ class ChessGameScene:
         elif event.type == pygame.MOUSEBUTTONDOWN:
             self.handle_mouse_button_down()
             if self.exit_button.is_clicked(event.pos):
+                pygame.mixer.Sound("audio/knopka-vyiklyuchatelya1.mp3").play()
                 self.scene_manager.switch_scene("MainMenuScene")
         elif event.type == pygame.MOUSEBUTTONUP:
             self.handle_mouse_button_up()
