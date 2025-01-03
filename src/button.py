@@ -9,6 +9,7 @@ class Button:
         self.width = width
         self.height = height
         self.text = text
+        
 
         self.image = pygame.image.load(image_path) #Uploading images
         self.image = pygame.transform.scale(self.image, (width, height)) #Resize the image to the desired size
@@ -16,6 +17,7 @@ class Button:
         if hover_image_path:
             self.hover_image = pygame.image.load(hover_image_path)#Uploading images  with cursor
             self.hover_image = pygame.transform.scale(self.hover_image, (width, height))
+            
 
             #Follows the mouse and checks the actions
         self.rect = self.image.get_rect(topleft=(x, y)) 

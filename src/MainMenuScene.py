@@ -9,7 +9,7 @@ class MainMenuScene:
         self.font = pygame.font.Font(None, 66)
 
         # Title Text
-        self.title_text = self.font.render("New Game", True, (255, 255, 255))
+        self.title_text = self.font.render("Chess Game", True, (255, 255, 255))
         self.title_rect = self.title_text.get_rect(center=(screen.get_width() // 2, screen.get_height()-40))
 
         self.main_background = pygame.image.load("pictures/background/main_menu.png")
