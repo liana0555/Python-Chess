@@ -30,7 +30,9 @@ With each level / with each subsequent puzzle, it will be more and more difficul
 
 ## Features:
 \*U - undo past move
+
 \*Up and down arrow - flip through the history of moves 
+
 \*ESC - return to the main menu / quit the game (if in the main menu).
 
 ## Showcase:
