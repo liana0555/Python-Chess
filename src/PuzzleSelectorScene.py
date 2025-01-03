@@ -17,15 +17,15 @@ class PuzzleSelectorScene:
 # Hide the standard cursor
         # Puzzle Buttons
         self.puzzle_buttons = [
-            Button(screen.get_width() // 2 - 126, 100, 252, 74, "Puzzle 1", 
+            Button(screen.get_width() //  2 - 348, 25, 232, 74, "Puzzle 1", 
                    "pictures/Pictures_button/puzzle_button.png", 
                    "pictures/Pictures_button/puzzle1_button.png", 
                    "audio/knopka-vyiklyuchatelya1.mp3"),
-            Button(screen.get_width() // 2 - 126, 200, 252, 74, "Puzzle 2", 
+            Button(screen.get_width() // 2 - 116, 25, 232, 74, "Puzzle 2", 
                    "pictures/Pictures_button/puzzle_button.png", 
                    "pictures/Pictures_button/puzzle1_button.png",  
                    "audio/knopka-vyiklyuchatelya1.mp3"),
-            Button(screen.get_width() // 2 - 126, 300, 252, 74, "Puzzle 3", 
+            Button(screen.get_width() // 2 + 116, 25, 232, 74, "Puzzle 3", 
                    "pictures/Pictures_button/puzzle_button.png", 
                    "pictures/Pictures_button/puzzle1_button.png", 
                    "audio/knopka-vyiklyuchatelya1.mp3"),

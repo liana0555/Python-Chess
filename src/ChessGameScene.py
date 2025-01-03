@@ -11,7 +11,7 @@ class ChessGameScene:
     def __init__(self, screen, scene_manager, custom_board=None):
         self.screen = screen
         self.scene_manager = scene_manager
-        self.font = pygame.font.SysFont("Arial", 20)
+        self.font = pygame.font.SysFont("Arial", 25)
         self.HISTORY_SCROLL_STEP = 20
         self.HISTORY_WIDTH = 200
         self.BORDER_SIZE = 28
@@ -87,7 +87,7 @@ class ChessGameScene:
     def draw_coordinates(self):
         for col in range(self.BOARD_SIZE):
             label = self.font.render(chr(ord("a") + col), True, (255, 255, 255))
-            self.screen.blit(label, (col * self.SQUARE_SIZE + self.BORDER_SIZE + self.SQUARE_SIZE // 3, self.SCREEN_HEIGHT - self.BORDER_SIZE + 4))
+            self.screen.blit(label, (col * self.SQUARE_SIZE + self.BORDER_SIZE + self.SQUARE_SIZE // 3, self.SCREEN_HEIGHT - self.BORDER_SIZE - 2 ))
 
         for row in range(self.BOARD_SIZE):
             label = self.font.render(str(8 - row), True, (255, 255, 255))
@@ -136,7 +136,7 @@ class ChessGameScene:
 
     def draw_move_history_title(self):
         title = self.font.render("Move History", True, (255, 255, 255))
-        self.screen.blit(title, (self.SCREEN_WIDTH - (self.HISTORY_WIDTH + self.BORDER_SIZE) + 10, 10))
+        self.screen.blit(title, (self.SCREEN_WIDTH - (self.HISTORY_WIDTH + self.BORDER_SIZE) + 30, 10))
 
     def draw_move_history_entries(self):
         for i, move in enumerate(self.move_history):
