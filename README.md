@@ -36,3 +36,11 @@ With each level / with each subsequent puzzle, it will be more and more difficul
 \*ESC - return to the main menu / quit the game (if in the main menu).
 
 ## Showcase:
+<p align="center">
+  <img src="Снимок экрана 2025-01-04 084006.png" width="45%">
+  <img src="Снимок экрана 2025-01-04 084048.png" width="45%">
+</p>
+ <img src="Снимок экрана 2025-01-04 084054.png" width="45%">
+</p>
+ <img src="Снимок экрана 2025-01-04 084059.png" width="45%">
+</p>
