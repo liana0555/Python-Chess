@@ -94,7 +94,7 @@ class ChessGameScene:
     def draw_coordinates(self):
         for col in range(self.BOARD_SIZE):
             label = self.font.render(chr(ord("a") + col), True, (255, 255, 255))
-            self.screen.blit(label, (col * self.SQUARE_SIZE + self.BORDER_SIZE + self.SQUARE_SIZE // 3, self.SCREEN_HEIGHT - self.BORDER_SIZE - 2))
+            self.screen.blit(label, (col * self.SQUARE_SIZE + self.BORDER_SIZE + self.SQUARE_SIZE // 3, self.SCREEN_HEIGHT - self.BORDER_SIZE + 4))
 
         for row in range(self.BOARD_SIZE):
             label = self.font.render(str(8 - row), True, (255, 255, 255))
