@@ -36,13 +36,13 @@ class PuzzleSelectorScene:
         mouse_pos = pygame.mouse.get_pos()
         self.screen.blit(self.cursor, (mouse_pos[0] - self.cursor.get_width() // 2, mouse_pos[1] - self.cursor.get_height() // 2))
         
-    def setup(self):
+    def setup(self): # Setup - Initialize scenes (creates initial variables)
         pass
 
-    def cleanup(self):
+    def cleanup(self): #Cleanup - Changing the scene
         pass
 
-    def update(self):
+    def update(self): #Update - Update the scene
         pass
 
     def render(self):
@@ -59,6 +59,7 @@ class PuzzleSelectorScene:
         self.draw_custom_cursor()
         pygame.display.flip()
 
+    #All the action scenes
     def handle_event(self, event):
         mouse_pos = pygame.mouse.get_pos()
 
