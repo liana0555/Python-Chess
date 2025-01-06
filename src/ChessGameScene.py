@@ -94,7 +94,7 @@ class ChessGameScene:
     def draw_coordinates(self):
         for col in range(self.BOARD_SIZE):
             label = self.font.render(chr(ord("a") + col), True, (255, 255, 255))
-            self.screen.blit(label, (col * self.SQUARE_SIZE + self.BORDER_SIZE + self.SQUARE_SIZE // 3, self.SCREEN_HEIGHT - self.BORDER_SIZE + 4))
+            self.screen.blit(label, (col * self.SQUARE_SIZE + self.BORDER_SIZE + self.SQUARE_SIZE // 3, self.SCREEN_HEIGHT - self.BORDER_SIZE - 2))
 
         for row in range(self.BOARD_SIZE):
             label = self.font.render(str(8 - row), True, (255, 255, 255))
@@ -179,7 +179,6 @@ class ChessGameScene:
         if self.selected_piece:
             new_x, new_y = self.get_square_under_mouse()
             if new_x is not None and new_y is not None:
-                pygame.mixer.Sound("audio/knopka-vyiklyuchatelya1.mp3").play()
                 move_type = self.selected_piece.possibleMoves[new_y][new_x]
 
                 if move_type in {"1", "2"}:

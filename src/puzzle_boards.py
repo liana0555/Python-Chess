@@ -1,7 +1,7 @@
 import vboard
 from piece import *
 
-
+#   Drawing board for Puzzle (1,2,3)
 def initPuzzle1()->list:
     VBoard=[['_']*8 for y in range(8)]
     VBoard[0][0]=Piece('K',Color.black)
