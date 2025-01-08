@@ -73,7 +73,7 @@ class MainMenuScene:
         # Pass events to buttons
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.start_button.is_clicked(event.pos):
-                self.scene_manager.switch_scene("NewGameScene")
+                self.scene_manager.switch_scene("SideSelectorScene")
             elif self.puzzles_button.is_clicked(event.pos):
                 self.scene_manager.switch_scene("PuzzleSelectorScene")
             elif self.exit_button.is_clicked(event.pos):

@@ -1,9 +1,10 @@
 import pygame
 from sceneManager import SceneManager
-from MainMenuScene import MainMenuScene
-from PuzzleSelectorScene import PuzzleSelectorScene
-from ChessGameScene import ChessGameScene
-import puzzle_boards
+from scenes.MainMenuScene import MainMenuScene
+from scenes.PuzzleSelectorScene import PuzzleSelectorScene
+
+from scenes.SideSelectorScene import SideSelectorScene
+
 pygame.init()
 pygame.mouse.set_visible(False)
 screen = pygame.display.set_mode((708, 536))
@@ -18,17 +19,8 @@ scene_manager.add_scene("MainMenuScene", main_menu_scene)
 puzzle_selector_scene = PuzzleSelectorScene(screen, scene_manager)
 scene_manager.add_scene("PuzzleSelectorScene", puzzle_selector_scene)
 
-new_game_scene = ChessGameScene(screen, scene_manager)
-scene_manager.add_scene("NewGameScene", new_game_scene)
-
-puzzle_1 = ChessGameScene(screen,scene_manager, puzzle_boards.initPuzzle1())
-scene_manager.add_scene("PuzzleScene_1",puzzle_1)
-
-puzzle_2 = ChessGameScene(screen,scene_manager, puzzle_boards.initPuzzle2())
-scene_manager.add_scene("PuzzleScene_2",puzzle_2)
-
-puzzle_3 = ChessGameScene(screen,scene_manager, puzzle_boards.initPuzzle3())
-scene_manager.add_scene("PuzzleScene_3",puzzle_3)
+side_selector_scene = SideSelectorScene(screen, scene_manager)
+scene_manager.add_scene("SideSelectorScene", side_selector_scene)
 
 scene_manager.switch_scene("MainMenuScene")
 

@@ -1,6 +1,9 @@
 import pygame
 import sys
+import os
 from button import Button
+from scenes.ChessGameScene import ChessGameScene
+from puzzleBoards import initPuzzle1,initPuzzle2,initPuzzle3
 
 class PuzzleSelectorScene:
     def __init__(self, screen, scene_manager):
@@ -73,9 +76,15 @@ class PuzzleSelectorScene:
             # Check if any of the puzzle buttons are clicked
             for i, button in enumerate(self.puzzle_buttons):
                 if button.is_clicked(event.pos):
-                    print(f"Puzzle {i + 1} selected")
-                    # Here you can switch to the actual puzzle scene
-                    self.scene_manager.switch_scene(f"PuzzleScene_{i + 1}")
+                    match i+1:
+                        case 1 :
+                            new_game_scene = ChessGameScene(self.screen, self.scene_manager , initPuzzle1())
+                        case 2 :
+                            new_game_scene = ChessGameScene(self.screen, self.scene_manager , initPuzzle2())
+                        case 3 :
+                            new_game_scene = ChessGameScene(self.screen, self.scene_manager , initPuzzle3())
+                    self.scene_manager.add_scene("NewGameScene", new_game_scene)
+                    self.scene_manager.switch_scene("NewGameScene")
 
 
 
