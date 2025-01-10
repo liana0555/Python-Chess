@@ -71,7 +71,13 @@ class SideSelectorScene:
         if event.type == pygame.MOUSEBUTTONDOWN:
             for i, button in enumerate(self.side_buttons):
                 if button.is_clicked(event.pos):
-                    new_game_scene = ChessGameScene(self.screen, self.scene_manager , vboard.initBoardB() if i==1 else vboard.initBoardW())
+                    if i == 1:
+                        new_game_scene = ChessGameScene(self.screen, self.scene_manager , vboard.initBoardB())
+                    elif i == 2:
+                        new_game_scene = ChessGameScene(self.screen, self.scene_manager , vboard.initBoardW())
+                    elif i == 3:
+                        new_game_scene = ChessGameScene(self.screen, self.scene_manager , vboard.initBoardR())
+                    
                     self.scene_manager.add_scene("NewGameScene", new_game_scene)
                     self.scene_manager.switch_scene("NewGameScene")
         if event.type == pygame.KEYDOWN:
