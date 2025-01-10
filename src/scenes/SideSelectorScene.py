@@ -20,15 +20,15 @@ class SideSelectorScene:
 
         # Side Buttons
         self.side_buttons = [
-            Button(screen.get_width() // 2 - 200, screen.get_height() // 2 - 100, 200, 150, "Side 1", 
+            Button(screen.get_width() // 2 - 225, screen.get_height() // 2 - 100, 232, 100, "Side 1", 
                    "pictures\Pictures_button\white_queen_button.png", 
                    "pictures\Pictures_button\white_queen_button.png", 
                    "audio/knopka-vyiklyuchatelya1.mp3"),
-            Button(screen.get_width() // 2 + 50, screen.get_height() // 2 - 100, 200, 150, "Side 2", 
+            Button(screen.get_width() // 2 + 25, screen.get_height() // 2 - 100, 232, 100, "Side 2", 
                    "pictures\Pictures_button\\black_queen_button.png", 
                    "pictures\Pictures_button\\black_queen_button.png", 
                    "audio/knopka-vyiklyuchatelya1.mp3"),
-            Button(screen.get_width() // 2 + 50, screen.get_height() // 2 - 100, 200, 150, "Side R", 
+            Button(screen.get_width() // 2 - 100, screen.get_height() // 2 + 50, 232, 100, "Side R",  
                    "pictures\Pictures_button\\random_button.png", 
                    "pictures\Pictures_button\\random_button.png", 
                    "audio/knopka-vyiklyuchatelya1.mp3"),
