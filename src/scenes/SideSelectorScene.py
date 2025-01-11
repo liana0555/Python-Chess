@@ -73,9 +73,9 @@ class SideSelectorScene:
                 if button.is_clicked(event.pos):
                     new_game_scene = None
                     if i == 1:
-                        new_game_scene = ChessGameScene(self.screen, self.scene_manager , vboard.initBoardB())
-                    elif i == 2:
                         new_game_scene = ChessGameScene(self.screen, self.scene_manager , vboard.initBoardW())
+                    elif i == 2:
+                        new_game_scene = ChessGameScene(self.screen, self.scene_manager , vboard.initBoardB())
                     elif i == 3:
                         new_game_scene = ChessGameScene(self.screen, self.scene_manager , vboard.initBoardR())
                     else:
