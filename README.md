@@ -20,7 +20,7 @@ Checkmate is a position in which the opponent's king is under attack and cannot 
 
 \*Bishop: moves any number of squares diagonally.
 
-\*Knight: walks in the letter "G" (two squares in one direction and one perpendicular). Can jump over pieces.
+\*Knight: walks two squares in one direction and one perpendicular. Can jump over pieces.
 
 \*Pawn: moves one square forward (can move two squares from the initial position). Strikes diagonally.
 
